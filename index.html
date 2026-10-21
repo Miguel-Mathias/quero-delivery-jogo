@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#7028c4">
+
+  <title>Desafio da Memória | Quero Delivery</title>
+
+  <style>
+    :root {
+      --roxo: #7028c4;
+      --roxo-escuro: #45157f;
+      --roxo-claro: #f3e9ff;
+      --branco: #ffffff;
+      --texto: #29183b;
+      --verde: #17b968;
+      --sombra: 0 24px 70px rgba(48, 14, 88, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--texto);
+      background:
+        radial-gradient(ellipse at 10% 10%, #a86bf0 0, transparent 38%),
+        radial-gradient(ellipse at 90% 85%, #c6a0ff 0, transparent 35%),
+        linear-gradient(135deg, #4b1689, #7a2bd0 52%, #4b1689);
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      max-width: 450px;
+      padding: 30px 25px;
+      overflow: hidden;
+      text-align: center;
+      background: var(--branco);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      border-radius: 30px;
+      box-shadow: var(--sombra);
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 7px;
+      background: linear-gradient(
+        90deg,
+        #a45cff,
+        #7028c4,
+        #d7b5ff
+      );
+    }
+
+    .logo {
+      display: block;
+      width: 165px;
+      max-width: 75%;
+      max-height: 95px;
+      height: auto;
+      object-fit: contain;
+      margin: 2px auto 20px;
+    }
+
+    .selo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 15px;
+      margin-bottom: 12px;
+      color: var(--roxo);
+      background: #f0e2ff;
+      border: 1px solid #e3ceff;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 5px 0 13px;
+      color: var(--roxo-escuro);
+      font-size: clamp(29px, 7vw, 37px);
+      line-height: 1.12;
+      font-weight: 900;
+      letter-spacing: -1.2px;
+    }
+
+    .descricao {
+      max-width: 335px;
+      margin: 0 auto 23px;
+      color: #71627e;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .regras {
+      margin: 22px 0;
+      padding: 17px 18px;
+      text-align: left;
+      background: linear-gradient(135deg, #faf6ff, #f3e8ff);
+      border: 1px solid #e8d8ff;
+      border-radius: 19px;
+    }
+
+    .regras p {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 11px 0;
+      color: #4d3a61;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .regras p:last-child {
+      margin-bottom: 0;
+    }
+
+    .botao {
+      display: flex;
+      width: 100%;
+      min-height: 54px;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 16px;
+      color: var(--branco);
+      background: linear-gradient(135deg, #812fe0, #5b19a7);
+      box-shadow: 0 8px 20px rgba(112, 40, 196, 0.24);
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .botao:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(112, 40, 196, 0.32);
+    }
+
+    .botao:focus-visible,
+    .carta:focus-visible {
+      outline: 3px solid #e2bdff;
+      outline-offset: 3px;
+    }
+
+    .botao:active {
+      transform: scale(0.98);
+    }
+
+    .botao-verde {
+      color: white;
+      background: linear-gradient(135deg, #25cf78, #0e9d55);
+      box-shadow: 0 8px 20px rgba(23, 185, 104, 0.23);
+    }
+
+    .botao-verde:hover {
+      background: linear-gradient(135deg, #20bd6c, #0a8748);
+    }
+
+    .rodape {
+      margin: 20px 0 0;
+      color: #9889a6;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* TELA DO JOGO */
+
+    .topo-jogo {
+      margin-bottom: 20px;
+    }
+
+    .topo-jogo h2 {
+      margin: 8px 0;
+      color: var(--roxo-escuro);
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -0.7px;
+    }
+
+    .indicadores {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .indicador {
+      padding: 15px 9px;
+      background: #f5edff;
+      border: 1px solid #e7d5ff;
+      border-radius: 18px;
+    }
+
+    .indicador > span {
+      display: block;
+      margin-bottom: 7px;
+      color: #79658e;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .indicador strong {
+      display: block;
+      color: var(--roxo);
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .instrucao {
+      margin: 0 auto 18px;
+      color: #776984;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .tabuleiro {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .carta {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      aspect-ratio: 1 / 1;
+      padding: 8px;
+      overflow: hidden;
+      border: 2px solid #e2ccff;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #8c40d9, #5c1ca4);
+      box-shadow: 0 5px 12px rgba(91, 28, 164, 0.13);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s, border 0.2s;
+    }
+
+    .carta:hover:not(:disabled) {
+      transform: translateY(-3px);
+      border-color: #b98af1;
+    }
+
+    .carta .interrogacao {
+      color: white;
+      font-size: 40px;
+      font-weight: 900;
+    }
+
+    .carta img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .carta.revelada,
+    .carta.encontrada {
+      background: #ffffff;
+      border-color: var(--roxo);
+      box-shadow: 0 4px 14px rgba(112, 40, 196, 0.13);
+    }
+
+    .carta.encontrada {
+      border-color: #22bd75;
+      background: #f0fff6;
+    }
+
+    .carta:disabled {
+      cursor: default;
+    }
+
+    .status {
+      min-height: 24px;
+      margin: 18px 0 0;
+      color: var(--roxo);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    /* TELAS FINAIS */
+
+    .emoji-final {
+      display: flex;
+      width: 90px;
+      height: 90px;
+      align-items: center;
+      justify-content: center;
+      margin: 8px auto 18px;
+      background: #f3e8ff;
+      border-radius: 50%;
+      font-size: 48px;
+    }
+
+    .mensagem-final {
+      margin: 0 0 22px;
+      color: #71627e;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .cupom {
+      margin: 22px 0;
+      padding: 24px 14px;
+      border: 2px dashed #a36be6;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #fbf7ff, #f0e3ff);
+    }
+
+    .cupom small {
+      display: block;
+      margin-bottom: 10px;
+      color: #78618d;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+    }
+
+    .cupom strong {
+      display: block;
+      color: var(--roxo-escuro);
+      font-size: clamp(27px, 7vw, 34px);
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .cupom p {
+      margin: 12px 0 0;
+      color: #78618d;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding: 12px;
+      }
+
+      .app {
+        padding: 26px 17px;
+        border-radius: 24px;
+      }
+
+      .tabuleiro {
+        gap: 8px;
+      }
+
+      .carta {
+        padding: 5px;
+        border-radius: 13px;
+      }
+
+      .regras {
+        padding: 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- PRIMEIRA TELA: APRESENTAÇÃO -->
+    <section id="telaInicial">
+
+      <img
+        src="imagens/logo.png"
+        alt="Quero Delivery"
+        class="logo"
+      >
+
+      <span class="selo">Desafio especial</span>
+
+      <h1>Desafio da Memória</h1>
+
+      <p class="descricao">
+        Será que você consegue encontrar todos os pares?
+        Teste sua memória neste desafio especial!
+      </p>
+
+      <div class="regras">
+        <p>🍔 Encontre os 3 pares de produtos.</p>
+        <p>⏱️ Você tem 30 segundos.</p>
+        <p>🎯 Você pode fazer até 8 tentativas.</p>
+        <p>🎁 Vença o desafio e descubra seu cupom!</p>
+      </div>
+
+      <button id="botaoComecar" class="botao">
+        Começar desafio
+      </button>
+
+      <p class="rodape">
+        Quero Delivery — seu próximo pedido pode estar mais perto!
+      </p>
+    </section>
+
+
+    <!-- SEGUNDA TELA: JOGO -->
+    <section id="telaJogo" hidden>
+
+      <div class="topo-jogo">
+        <img
+          src="imagens/logo.png"
+          alt="Quero Delivery"
+          class="logo"
+        >
+
+        <h2>Encontre os pares!</h2>
+      </div>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span>Tempo restante</span>
+          <strong><span id="tempo" style="display:inline">30</span>s</strong>
+        </div>
+
+        <div class="indicador">
+          <span>Tentativas restantes</span>
+          <strong id="tentativas">8</strong>
+        </div>
+      </div>
+
+      <p class="instrucao">
+        Escolha duas cartas por vez e encontre os 3 pares antes que o tempo acabe.
+      </p>
+
+      <div id="tabuleiro" class="tabuleiro"></div>
+
+      <p id="statusJogo" class="status" aria-live="polite">
+        Boa sorte!
+      </p>
+    </section>
+
+
+    <!-- TELA DE VITÓRIA -->
+    <section id="telaVitoria" hidden>
+
+      <img
+        src="imagens/logo.png"
+        alt="Quero Delivery"
+        class="logo"
+      >
+
+      <div class="emoji-final">🎉</div>
+
+      <h1>Você conseguiu!</h1>
+
+      <p class="mensagem-final">
+        Parabéns! Você encontrou todos os pares e desbloqueou uma oferta especial da Quero Delivery.
+      </p>
+
+      <div class="cupom">
+        <small>SEU CUPOM ESPECIAL</small>
+        <strong>QUERO10</strong>
+        <p>Consulte as condições de uso e a validade da promoção.</p>
+      </div>
+
+      <button id="botaoResgatar" class="botao botao-verde">
+        Quero aproveitar minha oferta
+      </button>
+
+      <p class="rodape">
+        Acesse a Quero Delivery e confira as opções disponíveis.
+      </p>
+    </section>
+
+
+    <!-- TELA DE DESAFIO NÃO CONCLUÍDO -->
+    <section id="telaDerrota" hidden>
+
+      <img
+        src="imagens/logo.png"
+        alt="Quero Delivery"
+        class="logo"
+      >
+
+      <div class="emoji-final">💜</div>
+
+      <h1>Quase lá!</h1>
+
+      <p class="mensagem-final">
+        Dessa vez não deu para encontrar todos os pares.
+        Obrigado por participar do desafio da Quero Delivery!
+      </p>
+
+      <a
+        class="botao"
+        href="https://querodelivery.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Conhecer a Quero Delivery
+      </a>
+    </section>
+
+  </main>
+
+  <script>
+    // Imagens utilizadas no jogo.
+    // Os nomes precisam corresponder aos arquivos da pasta imagens.
+
+    const imagens = [
+      {
+        nome: "combo",
+        arquivo: "imagens/combo.png"
+      },
+      {
+        nome: "pizza",
+        arquivo: "imagens/pizza.png"
+      },
+      {
+        nome: "hamburguer",
+        arquivo: "imagens/hamburguer.png"
+      }
+    ];
+
+    const telaInicial = document.getElementById("telaInicial");
+    const telaJogo = document.getElementById("telaJogo");
+    const telaVitoria = document.getElementById("telaVitoria");
+    const telaDerrota = document.getElementById("telaDerrota");
+
+    const tabuleiro = document.getElementById("tabuleiro");
+    const tempoElemento = document.getElementById("tempo");
+    const tentativasElemento = document.getElementById("tentativas");
+    const statusJogo = document.getElementById("statusJogo");
+
+    let cartasViradas = [];
+    let paresEncontrados = 0;
+    let tentativasRestantes = 8;
+    let tempoRestante = 30;
+    let bloqueado = false;
+    let jogoEncerrado = false;
+    let temporizador = null;
+    let tempoVirada = null;
+
+    document
+      .getElementById("botaoComecar")
+      .addEventListener("click", iniciarJogo);
+
+    function iniciarJogo() {
+      clearInterval(temporizador);
+      clearTimeout(tempoVirada);
+
+      telaInicial.hidden = true;
+      telaVitoria.hidden = true;
+      telaDerrota.hidden = true;
+      telaJogo.hidden = false;
+
+      cartasViradas = [];
+      paresEncontrados = 0;
+      tentativasRestantes = 8;
+      tempoRestante = 30;
+      bloqueado = false;
+      jogoEncerrado = false;
+
+      tempoElemento.textContent = tempoRestante;
+      tentativasElemento.textContent = tentativasRestantes;
+      statusJogo.textContent = "Boa sorte! Encontre os 3 pares.";
+
+      criarTabuleiro();
+
+      temporizador = setInterval(() => {
+        tempoRestante--;
+        tempoElemento.textContent = tempoRestante;
+
+        if (tempoRestante <= 0) {
+          encerrarJogo(false);
+        }
+      }, 1000);
+    }
+
+    function criarTabuleiro() {
+      tabuleiro.innerHTML = "";
+
+      const cartas = [...imagens, ...imagens]
+        .map((imagem, indice) => ({
+          ...imagem,
+          id: indice + "-" + Math.random()
+        }))
+        .sort(() => Math.random() - 0.5);
+
+      cartas.forEach((carta) => {
+        const botao = document.createElement("button");
+
+        botao.type = "button";
+        botao.className = "carta";
+        botao.setAttribute("aria-label", "Carta fechada");
+
+        const interrogacao = document.createElement("span");
+        interrogacao.className = "interrogacao";
+        interrogacao.textContent = "?";
+
+        const imagem = document.createElement("img");
+        imagem.src = carta.arquivo;
+        imagem.alt = carta.nome;
+        imagem.hidden = true;
+
+        imagem.addEventListener("error", () => {
+          statusJogo.textContent =
+            "Não foi possível carregar uma imagem. Confira os nomes dos arquivos na pasta imagens.";
+        });
+
+        botao.appendChild(interrogacao);
+        botao.appendChild(imagem);
+
+        botao.dataset.nome = carta.nome;
+        botao.dataset.id = carta.id;
+
+        botao.addEventListener("click", () => virarCarta(botao));
+
+        tabuleiro.appendChild(botao);
+      });
+    }
+
+    function virarCarta(carta) {
+      if (
+        jogoEncerrado ||
+        bloqueado ||
+        carta.classList.contains("revelada") ||
+        carta.classList.contains("encontrada")
+      ) {
+        return;
+      }
+
+      carta.classList.add("revelada");
+      carta.querySelector(".interrogacao").hidden = true;
+      carta.querySelector("img").hidden = false;
+      carta.setAttribute("aria-label", carta.dataset.nome);
+
+      cartasViradas.push(carta);
+
+      if (cartasViradas.length < 2) {
+        return;
+      }
+
+      tentativasRestantes--;
+      tentativasElemento.textContent = tentativasRestantes;
+
+      const [primeira, segunda] = cartasViradas;
+
+      if (primeira.dataset.nome === segunda.dataset.nome) {
+        primeira.classList.remove("revelada");
+        segunda.classList.remove("revelada");
+
+        primeira.classList.add("encontrada");
+        segunda.classList.add("encontrada");
+
+        primeira.disabled = true;
+        segunda.disabled = true;
+
+        paresEncontrados++;
+        cartasViradas = [];
+
+        statusJogo.textContent = "Par encontrado! Muito bem!";
+
+        if (paresEncontrados === 3) {
+          encerrarJogo(true);
+          return;
+        }
+
+        if (tentativasRestantes <= 0) {
+          encerrarJogo(false);
+        }
+
+        return;
+      }
+
+      bloqueado = true;
+      statusJogo.textContent = "Essas cartas não combinam. Tente outro par!";
+
+      tempoVirada = setTimeout(() => {
+        if (jogoEncerrado) return;
+
+        primeira.classList.remove("revelada");
+        segunda.classList.remove("revelada");
+
+        primeira.querySelector(".interrogacao").hidden = false;
+        segunda.querySelector(".interrogacao").hidden = false;
+
+        primeira.querySelector("img").hidden = true;
+        segunda.querySelector("img").hidden = true;
+
+        primeira.setAttribute("aria-label", "Carta fechada");
+        segunda.setAttribute("aria-label", "Carta fechada");
+
+        cartasViradas = [];
+        bloqueado = false;
+
+        if (tentativasRestantes <= 0) {
+          encerrarJogo(false);
+        }
+      }, 700);
+    }
+
+    function encerrarJogo(venceu) {
+      if (jogoEncerrado) return;
+
+      jogoEncerrado = true;
+      bloqueado = true;
+
+      clearInterval(temporizador);
+      clearTimeout(tempoVirada);
+
+      telaJogo.hidden = true;
+
+      if (venceu) {
+        telaVitoria.hidden = false;
+      } else {
+        telaDerrota.hidden = false;
+      }
+    }
+
+    document
+      .getElementById("botaoResgatar")
+      .addEventListener("click", () => {
+        const agente = navigator.userAgent || navigator.vendor || "";
+
+        if (/android/i.test(agente)) {
+          window.location.href =
+            "https://play.google.com/store/apps/details?id=com.querodelivery&hl=pt_BR";
+        } else if (/iPad|iPhone|iPod/i.test(agente)) {
+          window.location.href =
+            "https://apps.apple.com/br/app/quero-delivery/id1357804341";
+        } else {
+          window.location.href = "https://querodelivery.com/";
+        }
+      });
+  </script>
+</body>
+</html>
